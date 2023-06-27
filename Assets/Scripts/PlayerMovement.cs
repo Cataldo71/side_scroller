@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
@@ -12,8 +13,7 @@ public class Movement : MonoBehaviour
     public float checkRadius;
 
     private Rigidbody2D rigidBody;
-    private Animation animation;
-    private Animation idleAnimation;
+    private Animator animator;
     private bool facingRight = true;
     private bool isJumping = false;
     private float moveDirection;
@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
-        idleAnimation = GetComponent<Animation>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -54,14 +54,15 @@ public class Movement : MonoBehaviour
         if (isJumping)
             rigidBody.AddForce(new Vector2(0, jumpForce));
 
-        if(rigidBody.velocity.y == 0 || isJumping)
+        if(moveDirection == 0f)
         {
-            // load the idle animation
-
+            animator.SetBool("moving", false);
         }
         else
         {
             // walking animation
+            animator.SetBool("moving", true);
+
         }
 
         isJumping = false;
@@ -82,6 +83,10 @@ public class Movement : MonoBehaviour
         {
             // check to see if we are airborne..
             isJumping = true;
+        }
+        if(Input.GetButtonDown("Cancel"))
+        {
+            SceneManager.LoadScene(0);
         }
     }
 
